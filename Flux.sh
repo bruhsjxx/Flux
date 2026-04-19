@@ -12,7 +12,7 @@ fi
 
 BASE_DIR="/ComfyUI/models"
 
-mkdir -p "$BASE_DIR/checkpoints"
+mkdir -p "$BASE_DIR/diffusion_models"
 mkdir -p "$BASE_DIR/clip"
 mkdir -p "$BASE_DIR/vae"
 
@@ -23,7 +23,7 @@ if [ -z "$HF_TOKEN" ]; then
 fi
 
 echo "FLUX2 model indiriliyor..."
-wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8/resolve/main/flux-2-klein-base-9b-fp8.safetensors" -O "$BASE_DIR/checkpoints/flux2-klein-base-9b-fp8.safetensors"
+wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8/resolve/main/flux-2-klein-base-9b-fp8.safetensors" -O "$BASE_DIR/diffusion_models/flux2-klein-base-9b-fp8.safetensors"
 
 echo "Qwen encoder indiriliyor..."
 wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors" -O "$BASE_DIR/clip/qwen_3_8b_fp8mixed.safetensors"
