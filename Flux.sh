@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "===== FLUX AUTO SETUP BAŞLADI ====="
+echo "===== FLUX 2 AUTO SETUP BAŞLADI ====="
 
 # wget kontrolü
 if ! command -v wget &> /dev/null; then
@@ -16,35 +16,33 @@ mkdir -p "$BASE_DIR/checkpoints"
 mkdir -p "$BASE_DIR/clip"
 mkdir -p "$BASE_DIR/vae"
 
-# Token kontrolleri
-if [ -z "$civitai_token" ]; then
-  echo "HATA: civitai_token bulunamadı!"
+# HF token kontrolü
+if [ -z "$HF_TOKEN" ]; then
+  echo "HATA: HF_TOKEN bulunamadı!"
   exit 1
 fi
 
-if [ -z "$HF_TOKEN" ]; then
-  echo "UYARI: HF_TOKEN yok, HuggingFace indirmeleri fail olabilir"
-fi
+HF_HEADER="--header=Authorization: Bearer $HF_TOKEN"
 
-# HuggingFace header
-HF_HEADER=""
-if [ ! -z "$HF_TOKEN" ]; then
-  HF_HEADER="--header=Authorization: Bearer $HF_TOKEN"
-fi
+# =========================
+# 1️⃣ MODEL
+# =========================
+echo "FLUX2 model indiriliyor..."
+wget $HF_HEADER -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8/resolve/main/flux-2-klein-base-9b-fp8.safetensors" \
+-O "$BASE_DIR/checkpoints/flux2-klein-base-9b-fp8.safetensors"
 
-echo "FLUX model indiriliyor..."
-wget $HF_HEADER -c --content-disposition "https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/flux1-schnell.safetensors" -O "$BASE_DIR/checkpoints/flux1-schnell.safetensors"
+# =========================
+# 2️⃣ TEXT ENCODER (QWEN)
+# =========================
+echo "Qwen encoder indiriliyor..."
+wget $HF_HEADER -c "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors" \
+-O "$BASE_DIR/clip/qwen_3_8b_fp8mixed.safetensors"
 
-echo "CLIP indiriliyor..."
-wget $HF_HEADER -c --content-disposition "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors" -O "$BASE_DIR/clip/clip_l.safetensors"
-
-echo "T5 indiriliyor..."
-wget $HF_HEADER -c --content-disposition "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors" -O "$BASE_DIR/clip/t5xxl_fp16.safetensors"
-
+# =========================
+# 3️⃣ VAE
+# =========================
 echo "VAE indiriliyor..."
-wget $HF_HEADER -c --content-disposition "https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.safetensors" -O "$BASE_DIR/vae/ae.safetensors"
+wget $HF_HEADER -c "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors" \
+-O "$BASE_DIR/vae/flux2-vae.safetensors"
 
-echo "Fluxed Up indiriliyor..."
-wget -c "https://civitai.com/api/download/models/2817982?token=$civitai_token" -O "$BASE_DIR/checkpoints/fluxed_up.safetensors"
-
-echo "===== TÜM KURULUM TAMAMLANDI ====="
+echo "===== FLUX 2 KURULUM TAMAMLANDI ====="
