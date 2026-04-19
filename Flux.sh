@@ -1,25 +1,33 @@
 #!/bin/bash
 
-echo "FLUX SCRIPT BASLADI"
-echo "===== CUSTOM SETUP START ====="
+echo "===== FLUX AUTO SETUP BAŞLADI ====="
 
-FLUX_PATH="/workspace/ComfyUI/models/checkpoints/flux_nsfw_bf16.safetensors"
-FLUX_URL="https://civitai.com/api/download/models/2789377?type=Model&format=SafeTensor&size=full&fp=bf16"
+BASE_DIR="/workspace/ComfyUI/models"
 
-if [ -z "$civitai_token" ]; then
-  echo "UYARI: civitai_token bulunamadi! Indirme basarisiz olabilir."
-fi
+mkdir -p $BASE_DIR/checkpoints
+mkdir -p $BASE_DIR/clip
+mkdir -p $BASE_DIR/vae
 
-if [ ! -f "$FLUX_PATH" ]; then
-  echo "FLUX model indiriliyor..."
-  mkdir -p /workspace/ComfyUI/models/checkpoints
+cd $BASE_DIR
 
-  wget --header="Authorization: Bearer $civitai_token" \
-  -c --progress=bar:force \
-  -O "$FLUX_PATH" "$FLUX_URL"
+# 1️⃣ FLUX base model (SCHNELL - hızlı ve hafif)
+echo "FLUX model indiriliyor..."
+wget -c https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/flux1-schnell.safetensors \
+-O $BASE_DIR/checkpoints/flux1-schnell.safetensors
 
-else
-  echo "FLUX zaten mevcut, atlanıyor."
-fi
+# 2️⃣ CLIP encoder
+echo "CLIP indiriliyor..."
+wget -c https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_l.safetensors \
+-O $BASE_DIR/clip/clip_l.safetensors
 
-echo "===== CUSTOM SETUP END ====="
+# 3️⃣ T5 encoder (FLUX için kritik)
+echo "T5 indiriliyor..."
+wget -c https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors \
+-O $BASE_DIR/clip/t5xxl_fp16.safetensors
+
+# 4️⃣ VAE
+echo "VAE indiriliyor..."
+wget -c https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.safetensors \
+-O $BASE_DIR/vae/ae.safetensors
+
+echo "===== FLUX KURULUM TAMAMLANDI ====="
