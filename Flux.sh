@@ -22,27 +22,13 @@ if [ -z "$HF_TOKEN" ]; then
   exit 1
 fi
 
-HF_HEADER="--header=Authorization: Bearer $HF_TOKEN"
-
-# =========================
-# 1️⃣ MODEL
-# =========================
 echo "FLUX2 model indiriliyor..."
-wget $HF_HEADER -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8/resolve/main/flux-2-klein-base-9b-fp8.safetensors" \
--O "$BASE_DIR/checkpoints/flux2-klein-base-9b-fp8.safetensors"
+wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9b-fp8/resolve/main/flux-2-klein-base-9b-fp8.safetensors" -O "$BASE_DIR/checkpoints/flux2-klein-base-9b-fp8.safetensors"
 
-# =========================
-# 2️⃣ TEXT ENCODER (QWEN)
-# =========================
 echo "Qwen encoder indiriliyor..."
-wget $HF_HEADER -c "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors" \
--O "$BASE_DIR/clip/qwen_3_8b_fp8mixed.safetensors"
+wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/Comfy-Org/flux2-klein-9B/resolve/main/split_files/text_encoders/qwen_3_8b_fp8mixed.safetensors" -O "$BASE_DIR/clip/qwen_3_8b_fp8mixed.safetensors"
 
-# =========================
-# 3️⃣ VAE
-# =========================
 echo "VAE indiriliyor..."
-wget $HF_HEADER -c "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors" \
--O "$BASE_DIR/vae/flux2-vae.safetensors"
+wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors" -O "$BASE_DIR/vae/flux2-vae.safetensors"
 
 echo "===== FLUX 2 KURULUM TAMAMLANDI ====="
