@@ -15,6 +15,7 @@ BASE_DIR="/workspace/ComfyUI/models"
 mkdir -p "$BASE_DIR/diffusion_models"
 mkdir -p "$BASE_DIR/clip"
 mkdir -p "$BASE_DIR/vae"
+mkdir -p "$BASE_DIR/loras"
 
 # HF token kontrolü
 if [ -z "$HF_TOKEN" ]; then
@@ -35,3 +36,29 @@ echo "VAE indiriliyor..."
 wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/Comfy-Org/flux2-dev/resolve/main/split_files/vae/flux2-vae.safetensors" -O "$BASE_DIR/vae/flux2-vae.safetensors"
 
 echo "===== FLUX 2 KURULUM TAMAMLANDI ====="
+
+if [ -z "$CIVITAI_TOKEN" ]; then
+  echo "UYARI: CIVITAI_TOKEN bulunamadı, LoRA indirilmeyecek"
+else
+  echo "LoRA'lar indiriliyor..."
+
+  declare -A LORAS=(
+    ["lora1"]="https://civitai.com/api/download/models/XXXXX"
+    ["lora2"]="https://civitai.com/api/download/models/YYYYY"
+    ["lora3"]="https://civitai.com/api/download/models/ZZZZZ"
+  )
+
+  for NAME in "${!LORAS[@]}"; do
+    FILE="$BASE_DIR/loras/${NAME}.safetensors"
+
+    if [ ! -f "$FILE" ]; then
+      echo "$NAME indiriliyor..."
+      wget --header="Authorization: Bearer $CIVITAI_TOKEN" -c "${LORAS[$NAME]}" -O "$FILE" || echo "$NAME indirilemedi, geçiliyor"
+    else
+      echo "$NAME zaten var, atlanıyor"
+    fi
+  done
+fi
+
+echo "===== LORA KURULUM TAMAMLANDI ====="
+
