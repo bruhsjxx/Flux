@@ -22,6 +22,9 @@ if [ -z "$HF_TOKEN" ]; then
   exit 1
 fi
 
+echo "FLUX2 base model indiriliyor..."
+wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-base-9B/resolve/main/flux-2-klein-base-9b.safetensors?download=true" -O "$BASE_DIR/diffusion_models/flux2Klein_9b_base.safetensors"
+
 echo "FLUX2 model indiriliyor..."
 wget --header="Authorization: Bearer $HF_TOKEN" -c "https://huggingface.co/black-forest-labs/FLUX.2-klein-9B/resolve/main/flux-2-klein-9b.safetensors" -O "$BASE_DIR/diffusion_models/flux2Klein_9b.safetensors"
 
