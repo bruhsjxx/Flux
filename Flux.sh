@@ -10,7 +10,7 @@ if ! command -v wget &> /dev/null; then
   fi
 fi
 
-BASE_DIR="/ComfyUI/models"
+BASE_DIR="/workspace/ComfyUI/models"
 
 mkdir -p "$BASE_DIR/diffusion_models"
 mkdir -p "$BASE_DIR/clip"
